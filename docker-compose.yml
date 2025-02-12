@@ -1,0 +1,27 @@
+services:
+
+  otus-db:
+    hostname: otus-db
+    container_name: otus-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${OTUS_DB_USER}
+      POSTGRES_PASSWORD: ${OTUS_DB_PASSWORD}
+      POSTGRES_DB: ${OTUS_DB}
+    env_file:
+      - .env
+    ports:
+      - ${OTUS_DB_PORT}:5432
+    networks:
+      - otus-network
+#    volumes:
+#      - otus_db:/var/lib/postgresql/data
+
+
+networks:
+  otus-network:
+#volumes:
+#  otus_db:
+#    driver: local
+

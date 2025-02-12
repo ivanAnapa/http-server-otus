@@ -1,0 +1,112 @@
+import org.jooq.meta.jaxb.Logging
+
+plugins {
+    id("java")
+    id("org.liquibase.gradle") version "2.2.2"
+    id("com.github.otkmnb2783.dotenv") version "0.2.0"
+    id('nu.studer.jooq') version '9.0'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    liquibaseRuntime 'info.picocli:picocli:4.7.6'
+    liquibaseRuntime("org.liquibase:liquibase-core:4.30.0")
+    liquibaseRuntime("org.postgresql:postgresql:42.7.4")
+
+    jooqGenerator("org.postgresql:postgresql:42.7.4")
+
+    implementation("org.postgresql:postgresql:42.7.4")
+    implementation group: 'org.jooq', name: 'jooq', version: '3.19.18'
+    implementation group: 'org.jooq', name: 'jooq-meta', version: '3.19.18'
+    implementation group: 'org.jooq', name: 'jooq-codegen', version: '3.19.18'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.24.3'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.24.3'
+
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.12.1'
+}
+
+// https://github.com/etiennestuder/gradle-jooq-plugin/blob/main/README.md
+jooq {
+    version = "3.19.15"
+    configurations {
+
+        main {
+            generationTool {
+                logging = Logging.WARN
+                jdbc {
+                    driver = "org.postgresql.Driver"
+                    url = "jdbc:postgresql://localhost:${env.OTUS_DB_PORT}/${env.OTUS_DB}"
+                    user = "${env.OTUS_DB_USER}"
+                    password = "${env.OTUS_DB_PASSWORD}"
+                }
+                generator {
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = false
+                        fluentSetters = true
+                    }
+
+                    database {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public"
+                        includes = '.*'
+                        excludes = "databasechange.*?"
+                    }
+
+                    target {
+                        packageName = "ru.otus.http.jserver.generated"
+                        directory = "build/generated/sources/jooq/java/main"
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+liquibase {
+    activities {
+        main {
+            changelogFile "db/liquibase-changelog.xml"
+            url "jdbc:postgresql://localhost:${env.OTUS_DB_PORT}/${env.OTUS_DB}"
+            username "${env.OTUS_DB_USER}"
+            password "${env.OTUS_DB_PASSWORD}"
+        }
+    }
+}
+
+//
+tasks.named("compileJava") {
+    dependsOn(tasks.named("generateJooq"))
+}
+
+tasks.named('generateJooq').configure {
+    // add additional JVM arguments
+    javaExecSpec = { JavaExecSpec s ->
+        s.jvmArgs '-Dorg.jooq.no-logo=true -Dorg.jooq.no-tips=true'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
