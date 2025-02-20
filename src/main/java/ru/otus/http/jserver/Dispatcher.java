@@ -23,8 +23,6 @@ public class Dispatcher {
     public Dispatcher() {
         ProductsService productsService = new ProductsService();
         this.router = new HashMap<>();
-        this.router.put(GET + " /calc", new CalculatorProcessor());
-        this.router.put(GET + " /welcome", new WelcomeProcessor());
         this.router.put(GET + " /products", new GetProductsProcessor(productsService));
         this.router.put(POST + " /products", new CreateProductProcessor(productsService));
         this.router.put(DELETE + " /products", new DeleteProductProcessor(productsService));
