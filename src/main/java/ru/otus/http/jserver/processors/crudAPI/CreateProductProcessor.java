@@ -33,4 +33,5 @@ public class CreateProductProcessor implements RequestProcessor {
         String response = new MessageFormat("HTTP/1.1 {0}\r\nContent-Type: text/html\r\n\r\n").format(responseCode);
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
+
 }

@@ -85,4 +85,5 @@ public class Crud {
                 .where(ru.otus.http.jserver.generated.tables.Product.PRODUCT.ID.eq(product.getId()))
                 .execute();
     }
+
 }

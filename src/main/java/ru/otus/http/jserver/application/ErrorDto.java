@@ -36,4 +36,5 @@ public class ErrorDto {
         this.description = description;
         this.timestamp = LocalDateTime.now();
     }
+
 }
