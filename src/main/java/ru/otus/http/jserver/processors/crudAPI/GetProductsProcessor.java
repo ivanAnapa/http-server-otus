@@ -51,10 +51,9 @@ public class GetProductsProcessor implements RequestProcessor {
     }
 
     private static String responseContent() {
-        return """
-                    HTTP/1.1 200 OK\r
-                    Content-Type: application/json\r
-                    \r
-                    """.trim();
+        return "" +
+                "HTTP/1.1 200 OK\r\n" +
+                "Content-Type: application/json\r\n" +
+                "\r\n";
     }
 }

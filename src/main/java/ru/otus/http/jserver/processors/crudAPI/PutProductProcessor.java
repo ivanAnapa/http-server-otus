@@ -35,18 +35,16 @@ public class PutProductProcessor implements RequestProcessor {
         try {
             Product product = gson.fromJson(request.getBody(), Product.class);
             productsService.modifyProduct(product);
-            response = """
-                    HTTP/1.1 201 Created\r
-                    Content-Type: text/html\r
-                    \r
-                    """.trim();
+            response = "" +
+                    "HTTP/1.1 201 Created\r\n" +
+                    "Content-Type: text/html\r\n" +
+                    "\r\n";
         } catch (NoSuchElementException | NullPointerException e) {
             logger.error(e.getMessage());
-            response = """
-                    HTTP/1.1 204 No Content\r
-                    Content-Type: text/html\r
-                    \r
-                    """.trim();
+            response = "" +
+                    "HTTP/1.1 204 No Content\r\n" +
+                    "Content-Type: text/html\r\n" +
+                    "\r\n";
         }
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }

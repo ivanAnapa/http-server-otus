@@ -37,11 +37,10 @@ public class DeleteProductProcessor implements RequestProcessor {
             productsService.deleteAllProducts();
         }
 
-        String response = """
-                HTTP/1.1 204 No Content\r
-                Content-Type: text/html\r
-                \r
-                """.trim();
+        String response = "" +
+                "HTTP/1.1 204 No Content\r\n" +
+                "Content-Type: text/html\r\n" +
+                "\r\n";
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 
