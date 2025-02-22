@@ -15,10 +15,15 @@ import java.util.List;
 
 public class GetProductsProcessor implements RequestProcessor {
     private static final Logger logger = LogManager.getLogger(GetProductsProcessor.class);
-    private ProductsService productsService;
+    private final ProductsService productsService;
 
     public GetProductsProcessor(ProductsService productsService) {
         this.productsService = productsService;
+    }
+
+    @Override
+    public String urlPrefix() {
+        return "/products";
     }
 
     @Override
@@ -46,9 +51,10 @@ public class GetProductsProcessor implements RequestProcessor {
     }
 
     private static String responseContent() {
-            return  "" +
-                    "HTTP/1.1 200 OK\r\n" +
-                    "Content-Type: application/json\r\n" +
-                    "\r\n";
+        return """
+                    HTTP/1.1 200 OK\r
+                    Content-Type: application/json\r
+                    \r
+                    """.trim();
     }
 }

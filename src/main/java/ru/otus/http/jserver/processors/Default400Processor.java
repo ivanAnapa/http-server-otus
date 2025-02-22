@@ -18,11 +18,12 @@ public class Default400Processor implements RequestProcessor {
         );
         Gson gson = new Gson();
         String jsonError = gson.toJson(errorDto);
-        String response = "" +
-                "HTTP/1.1 400 Bad Request\r\n" +
-                "Content-Type: application/json\r\n" +
-                "\r\n" +
-                jsonError;
+
+        String response = """
+                HTTP/1.1 400 Bad Request\r
+                Content-Type: application/json\r
+                \r
+                """.trim() + jsonError;
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 }

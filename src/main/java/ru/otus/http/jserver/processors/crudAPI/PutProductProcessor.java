@@ -16,30 +16,37 @@ import java.util.NoSuchElementException;
 public class PutProductProcessor implements RequestProcessor {
     private static final Logger logger = LogManager.getLogger(PutProductProcessor.class);
 
-    private ProductsService productsService;
+    private final ProductsService productsService;
 
     public PutProductProcessor(ProductsService productsService) {
         this.productsService = productsService;
     }
 
     @Override
+    public String urlPrefix() {
+        return "/products";
+    }
+
+    @Override
     public void execute(HttpRequest request, OutputStream output) throws IOException {
         Gson gson = new Gson();
-        Product product = null;
-        String response = "";
+        String response;
+
         try {
-            product = gson.fromJson(request.getBody(), Product.class);
+            Product product = gson.fromJson(request.getBody(), Product.class);
             productsService.modifyProduct(product);
-            response = "" +
-                    "HTTP/1.1 201 Created\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "\r\n";
+            response = """
+                    HTTP/1.1 201 Created\r
+                    Content-Type: text/html\r
+                    \r
+                    """.trim();
         } catch (NoSuchElementException | NullPointerException e) {
             logger.error(e.getMessage());
-            response = "" +
-                    "HTTP/1.1 204 No Content\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "\r\n";
+            response = """
+                    HTTP/1.1 204 No Content\r
+                    Content-Type: text/html\r
+                    \r
+                    """.trim();
         }
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
