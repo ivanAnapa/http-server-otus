@@ -13,10 +13,15 @@ import java.util.NoSuchElementException;
 
 public class DeleteProductProcessor implements RequestProcessor {
     private static final Logger logger = LogManager.getLogger(DeleteProductProcessor.class);
-    private ProductsService productsService;
+    private final ProductsService productsService;
 
     public DeleteProductProcessor(ProductsService productsService) {
         this.productsService = productsService;
+    }
+
+    @Override
+    public String urlPrefix() {
+        return "/products";
     }
 
     @Override
@@ -32,10 +37,11 @@ public class DeleteProductProcessor implements RequestProcessor {
             productsService.deleteAllProducts();
         }
 
-        String response = "" +
-                "HTTP/1.1 204 No Content\r\n" +
-                "Content-Type: text/html\r\n" +
-                "\r\n";
+        String response = """
+                HTTP/1.1 204 No Content\r
+                Content-Type: text/html\r
+                \r
+                """.trim();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class HttpRequest {
     private static final Logger logger = LogManager.getLogger(HttpRequest.class);
+    private final String rawRequest;
 
-    private String rawRequest;
     private HttpMethod method;
     private String uri;
     private Map<String, String> parameters;
@@ -26,12 +26,12 @@ public class HttpRequest {
         this.errorCause = errorCause;
     }
 
-    public String getBody() {
-        return body;
+    public HttpMethod getMethod() {
+        return method;
     }
 
-    public String getRoutingKey() {
-        return method + " " + uri; // 'GET /items', 'POST /items'
+    public String getBody() {
+        return body;
     }
 
     public String getUri() {
@@ -76,17 +76,18 @@ public class HttpRequest {
                             headers.put(keyValue[0], keyValue[1]);
                         }
                 );
-        // \r\n
-        this.body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4, rawRequest.length());
+        this.body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
     }
 
     public void info(boolean showRawRequest) {
-        logger.info("METHOD: " + method);
-        logger.info("URI: " + uri);
-        logger.info("HEADERS: " + headers);
-        logger.info("BODY: " + body);
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nMETHOD: ").append(method);
+        sb.append("\nURI: ").append(uri);
+        sb.append("\nHEADERS: ").append(headers);
+        sb.append("\nBODY: ").append(body);
         if (showRawRequest) {
-            logger.info("rawRequest: {}", rawRequest);
+            sb.append("\n").append(rawRequest);
         }
+        logger.info(sb.toString());
     }
 }

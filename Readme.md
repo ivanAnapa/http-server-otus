@@ -22,3 +22,4 @@
 4) Изменение продукта в БД: PUT http://localhost:8189/products с телом запроса в виде {"id":11,"title":"Bread"} 
 5) Удаление всех продуктов в БД: DELETE http://localhost:8189/products
 6) Удаление продукта по id в БД: DELETE http://localhost:8189/products?id={id}
+7) Получение файла по названию: GET http://localhost:8189/files/{fileName} (например: Harold.jpg)

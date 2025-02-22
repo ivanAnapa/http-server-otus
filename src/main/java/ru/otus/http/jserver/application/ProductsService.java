@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static ru.otus.http.jserver.generated.tables.Product.PRODUCT;
+
 public class ProductsService {
     private static final Logger logger = LogManager.getLogger(ProductsService.class);
 
@@ -26,8 +28,8 @@ public class ProductsService {
         this.products = new ArrayList<>();
         Result<Record> allProducts = Crud.getAllProducts();
         allProducts.forEach(product -> {
-            Integer id = product.getValue(ru.otus.http.jserver.generated.tables.Product.PRODUCT.ID);
-            String name = product.getValue(ru.otus.http.jserver.generated.tables.Product.PRODUCT.NAME);
+            Integer id = product.getValue(PRODUCT.ID);
+            String name = product.getValue(PRODUCT.NAME);
             products.add(new Product(id, name));
         });
         return Collections.unmodifiableList(products);
@@ -36,8 +38,8 @@ public class ProductsService {
     public Product getProductById(int id) {
         logger.info("Получение продукта с id = {}", id);
         ProductRecord product = Crud.getOneProductByCondition(
-                ru.otus.http.jserver.generated.tables.Product.PRODUCT,
-                ru.otus.http.jserver.generated.tables.Product.PRODUCT.ID.eq(id)
+                PRODUCT,
+                PRODUCT.ID.eq(id)
         );
         if (product == null) {
             throw new NullPointerException("Продукта с id = " + id + " в БД нет");
@@ -56,7 +58,6 @@ public class ProductsService {
             e.printStackTrace();
         }
         return false;
-
     }
 
     public void deleteProductById(int id) {
