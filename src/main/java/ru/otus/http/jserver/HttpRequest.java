@@ -79,15 +79,11 @@ public class HttpRequest {
         this.body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
     }
 
-    public void info(boolean showRawRequest) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nMETHOD: ").append(method);
-        sb.append("\nURI: ").append(uri);
-        sb.append("\nHEADERS: ").append(headers);
-        sb.append("\nBODY: ").append(body);
-        if (showRawRequest) {
-            sb.append("\n").append(rawRequest);
-        }
-        logger.info(sb.toString());
+    public void info() {
+        logger.info("METHOD: " + method);
+        logger.info("URI: " + uri);
+        logger.info("HEADERS: " + headers);
+        logger.info("BODY: " + body);
+        logger.debug("rawRequest: {}", rawRequest);
     }
 }

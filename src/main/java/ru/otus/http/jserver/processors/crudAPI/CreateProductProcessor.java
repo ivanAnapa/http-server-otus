@@ -9,7 +9,6 @@ import ru.otus.http.jserver.processors.RequestProcessor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.text.*;
 
 public class CreateProductProcessor implements RequestProcessor {
 
@@ -29,8 +28,12 @@ public class CreateProductProcessor implements RequestProcessor {
         Gson gson = new Gson();
         Product newProduct = gson.fromJson(request.getBody(), Product.class);
 
-        String responseCode  = productsService.createNewProduct(newProduct) ? "201 Created" : "409 Conflict";
-        String response = new MessageFormat("HTTP/1.1 {0}\r\nContent-Type: text/html\r\n\r\n").format(responseCode);
+        String responseCode = productsService.createNewProduct(newProduct) ? "201 Created" : "409 Conflict";
+        String response = "" +
+                "HTTP/1.1 " + responseCode + "+\r\n" +
+                "Content-Type: text/html\r\n" +
+                "\r\n";
+
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
 }

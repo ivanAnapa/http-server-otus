@@ -3,9 +3,7 @@ package ru.otus.http.jserver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -15,49 +13,42 @@ public class HttpServer {
     private static final Logger logger = LogManager.getLogger(HttpServer.class);
 
     private static final int THREAD_POOL_SIZE = 10;
+    private int port;
 
     private final Dispatcher dispatcher;
-    private final ServerSocket serverSocket;
     private final ExecutorService threadPool;
 
-    public HttpServer(int port) throws IOException {
+    public HttpServer(int port) {
         this.dispatcher = new Dispatcher();
         this.threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        this.serverSocket = new ServerSocket(port);
+        this.port = port;
     }
 
     public void start() {
-        logger.info("Сервер запущен на порту: {}", serverSocket.getLocalPort());
-
-        try {
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                threadPool.execute(() -> handleClient(clientSocket));
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            logger.info("Сервер запущен на порту: " + port);
+            while (!serverSocket.isClosed()) {
+                Socket socket = serverSocket.accept();
+                threadPool.execute(() -> handleRequest(socket));
             }
         } catch (IOException e) {
             logger.error(e);
+        } finally {
             threadPool.shutdown();
         }
     }
 
-    private void handleClient(Socket clientSocket) {
-        logger.info("Подключился новый клиент");
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()), 8192)) {
-            String clientInputLine;
-
-            while ((clientInputLine = in.readLine()) != null) {
-                if (clientInputLine.isEmpty()) {
-                    break;
-                }
-                logger.info("Запрос клиента: {}", clientInputLine);
-
-                HttpRequest request = new HttpRequest(clientInputLine);
-                request.info(true);
-
-                dispatcher.execute(request, clientSocket.getOutputStream());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    private void handleRequest(Socket socket) {
+        byte[] buffer = new byte[8192];
+        try {
+            int n = socket.getInputStream().read(buffer);
+            logger.info("Подключился новый клиент");
+            HttpRequest request = new HttpRequest(new String(buffer, 0, n));
+            request.info();
+            dispatcher.execute(request, socket.getOutputStream());
+            socket.close();
+        } catch (IOException e) {
+            logger.error(e);
         }
     }
 }
