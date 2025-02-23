@@ -1,7 +1,5 @@
 package ru.otus.http.jserver;
 
-import java.io.*;
-
 public class Application {
 
     /**
@@ -15,7 +13,7 @@ public class Application {
      * o	PUT /items – модификация продукта
      * o	DELETE /items?id=1 – удаление продукта с указанным id
      * *    При запросе GET /[имя_файла] возвращать в теле ответа указанный файл из папки static
-     *
+     * <p>
      * ************ To Do ************
      * •
      * •	*** Можно прикрутить простой frontend
@@ -31,8 +29,7 @@ public class Application {
      * •    ***** Сделать поддержку сервлетов
      */
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new HttpServer(8189).start();
     }
-
 }

@@ -43,6 +43,4 @@ public class DeleteProductProcessor implements RequestProcessor {
                 "\r\n";
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
-
-
 }

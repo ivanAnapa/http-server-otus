@@ -27,5 +27,4 @@ public class Product {
         this.id = id;
         this.title = title;
     }
-
 }

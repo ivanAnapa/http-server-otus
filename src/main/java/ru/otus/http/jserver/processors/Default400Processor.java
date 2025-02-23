@@ -26,5 +26,4 @@ public class Default400Processor implements RequestProcessor {
                 """.trim() + jsonError;
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
-
 }

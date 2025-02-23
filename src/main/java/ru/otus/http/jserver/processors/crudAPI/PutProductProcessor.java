@@ -48,5 +48,4 @@ public class PutProductProcessor implements RequestProcessor {
         }
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
-
 }

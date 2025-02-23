@@ -12,5 +12,4 @@ public interface RequestProcessor {
     }
 
     void execute(HttpRequest request, OutputStream output) throws IOException;
-
 }

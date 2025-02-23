@@ -17,5 +17,4 @@ public class Default500Processor implements RequestProcessor {
                 """.trim();
         output.write(response.getBytes(StandardCharsets.UTF_8));
     }
-
 }
